@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# rev 124
+
+CACHE:
+js/cashflow.js
+lib/remoteStorage.debug.js
+lib/hammer.min.js
+img/settings.png
+img/refresh.png
+img/x.png
+img/info.png
+img/edit.png
+img/layers_w.png
+
+NETWORK:
+*
+
+FALLBACK:
+img/cloud.png img/cloud_offline.png

@@ -1,0 +1,131 @@
+body, div, ul, li, form, input {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 102%;
+  background: #000;
+}
+
+/* Portrait (i.e. narrow viewport) */
+@media screen and (max-aspect-ratio: 1/1) {
+    ::selection { background: transparent }
+}
+
+
+*:focus {
+  outline-width: 0;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #000;
+}
+
+ul {
+  list-style-type: none
+}
+
+.list {
+}
+
+.list li {
+  background: rgba(50, 50, 50, 1);
+  color: #FFF;
+  background-repeat: no-repeat;
+}
+
+.list li div {
+  position: relative;
+  border-top: 1px solid rgb(70, 70, 90);
+  border-bottom: 1px solid rgb(30, 30, 40);
+  overflow: auto;
+  display: flex; display: -webkit-flex; display: -webkit-box;
+  transition: left 0.3s; -webkit-transition: left 0.3s;
+}
+
+.list li div.dragged {
+  transition: left 0s; -webkit-transition: left 0s;
+}
+
+.list li div span {
+  box-sizing: border-box;
+  padding: 0 2%;
+  display: block;
+  flex: 1; -webkit-flex: 1; -webkit-box-flex: 1;
+  min-width: 2em;
+  min-height: 1em;
+}
+
+.list li div span.detail {
+  width: 2em;
+  max-width: 2em;
+  color: #AAA;
+}
+
+.hidden {
+  display: none;
+}
+
+.list li div.progress {
+  -webkit-transition: background 1s ease-out;
+  xbackground: -webkit-linear-gradient(right, rgb(150, 150, 60) 0%, rgb(150, 150, 60) 50%, rgb(50, 50, 60) 50%, rgb(50, 50, 60) 100%);
+  background: -webkit-linear-gradient(right, rgb(240, 210, 60) 50%, rgb(50, 50, 60) 50%);
+  background-size: 200%;
+  background-position: 0%;
+}
+
+.list li div.progress.noTransition {
+  -webkit-transition: background 0s;
+}
+
+#appContainer {
+  width: 320px;
+  xheight: 568px;
+  xmax-height: 568px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.list li {
+  color: #333;
+}
+
+.list li div {
+  background: rgb(250, 250, 250);
+  border-bottom: 1px solid rgb(235, 235, 235);
+  border-top: 1px solid rgb(255, 255, 255);
+  overflow: auto;
+  background: white;
+  xbackground: rgb(250, 250, 250) url(img/layers2.png) repeat-y;
+}
+
+.list li div span {
+  background: transparent url(img/white.png) repeat-y;
+  padding: 0.75em 0;
+}
+
+#parentStack .list li div {
+  border-bottom: 1px solid rgb(80, 80, 80);
+  border-top: 1px solid rgb(140, 140, 140);
+}
+
+#parentStack .list li div span {
+  background: rgb(100, 100, 100);
+  color: #FFF;
+  overflow: auto;
+}
+
+#parentStack .list li div span.detail {
+  xdisplay: none;
+}
+
+.app {
+  min-height: 100%;
+}

@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+<meta charset='utf-8'>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 102%;
+}
+
+body {
+  background: #000;
+}
+
+ul {
+  list-style-type: none
+}
+
+
+.list {
+}
+
+.list li {
+  background: rgb(250, 255, 40);
+  color: #FFF;
+  background-repeat: no-repeat;
+}
+
+.list li div {
+  position: relative;
+  padding: 0.75em 0;
+  background: rgb(50, 50, 60);
+  border-top: 1px solid rgb(70, 70, 90);
+  border-bottom: 1px solid rgb(30, 30, 40);
+  overflow: auto;
+
+  display: flex; display: -webkit-flex; display: -webkit-box;
+  transition: left 0.3s; -webkit-transition: left 0.3s;
+}
+
+.list li div.dragged {
+  transition: left 0s; -webkit-transition: left 0s;
+}
+
+.list li div span {
+  box-sizing: border-box;
+  padding: 0 2%;
+  display: block;
+  flex: 1; -webkit-flex: 1; -webkit-box-flex: 1;
+  min-width: 2em;
+}
+
+/* custom */
+
+#content {
+  width: 320px;
+  overflow: hidden;
+}
+
+.list.items li div {
+  background: rgb(250, 40, 40);
+  border-bottom: 1px solid rgb(200, 40, 40);
+  border-top: 1px solid rgb(250, 80, 80);
+  overflow: auto;
+}
+
+.list li div span.price {
+  min-width: 4em;
+  text-align: right;
+  flex: 0; -webkit-flex: 0; -webkit-box-flex: 0;
+}
+
+.list li div span.name {
+  flex: 1; -webkit-flex: 1; -webkit-box-flex: 1;
+}
+
+.list li div span.date {
+  flex: 0; -webkit-flex: 0; -webkit-box-flex: 0;
+  width: 4em;
+}
+
+.debug .price { background: olive }
+.debug .name { background: green; }
+.debug .date { background: blue; }
+
+</style>
+<title>My blank page</title>
+</head>
+<body class="debugx">
+
+<div id="content">
+
+<ul class="list settings">
+  <li>
+    <div>
+      <span>This is a text item #1</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span> This is a text item #1</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span>This is a text item #1</span>
+    </div>
+  </li>
+</ul>
+
+<ul class="list items">
+  <li>
+    <div>
+      <span>This is a text item #1 but a longer one almost as long as lorem ipsum dol amet ha ha ha</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="span10">This is a text item #1</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-888.88</span>
+      <span class="name">Rent</span>
+      <span class="date">Apr 2</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-12535.12</span>
+      <span class="name">Dress</span>
+      <span class="date">Apr 2</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-15.04</span>
+      <span class="name">Burger</span>
+      <span class="date">Apr 2</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price"> -14.00</span>
+      <span class="name">home moving</span>
+      <span class="date">24 Aug</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-1.41</span>
+      <span class="name">food groceries</span>
+      <span class="date">24 Aug</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-15.04</span>
+      <span class="name">food groceries</span>
+      <span class="date">24 Aug</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-1.30</span>
+      <span class="name">food sweets</span>
+      <span class="date">24 Aug</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="price">-832.00</span>
+      <span class="name">This is a text item #1 but a longer one almost as long as lorem ipsum dol amet</span>
+      <span class="date">23 Aug</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span>This is a text item #2</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span>This is a text item #3 but a longer one almost as long as lorem ipsum dol amet</span>
+      <span>This is a text item #3 but a longer one almost as long as lorem ipsum dol amet</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="span10">This is a text item #4</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span class="span10">This is a text item bla bla #5</span>
+    </div>
+  </li>
+  <li>
+    <div>
+      <span>This is a text item #6 but a longer one almost as long as lorem ipsum dol amet</span>
+    </div>
+  </li>
+</ul>
+
+</div>
+
+<script type="text/javascript">
+var kIconDelete = 0;
+var kIconInfo = 1;
+var kIconEdit = 2;
+var kIconPay = 3;
+var icons = ['img/x.png', 'img/info.png', 'img/edit.png', 'img/pay.png'];
+var actionThreshold = 0.3;
+var subActionThreshold = 0.6;
+
+var toList = function(a) { return Array.prototype.concat.apply([], a); }
+var settingsElements = toList(document.querySelectorAll('.list.settings li'));
+var itemElements = toList(document.querySelectorAll('.list.items li'));
+
+var addItemEventHandlers = function(itemElem, item) {
+  if (!item || !item.actions) return;
+
+  var backgroundElem = itemElem;
+  var foregroundElem = itemElem.querySelector('div');
+  var startX, startY, deltaX, deltaY;
+  var bgIcon;
+  var touchDragging;
+  var activeAction = null;
+
+  function onSlideStart(x, y) {
+    startX = x;
+    startY = y;
+    bgIcon = null;
+    foregroundElem.className += ' dragged';
+  }
+
+  function onSlide(x, y) {
+    deltaX = x - startX;
+    deltaY = y - startY;
+
+    if (deltaX > 0 && startX > 0 && item.actions.left && item.actions.left.primary) {
+      foregroundElem.style.left = deltaX + 'px';
+      k = deltaX / itemElem.clientWidth;
+      alpha = 1;
+      if (k < actionThreshold) {
+        alpha = k / actionThreshold * 0.6;
+        activeAction = null;
+      }
+      else if (k > actionThreshold) {
+        activeAction = item.actions.left.primary;
+      }
+
+      var color = item.actions.left.primary.color;
+      var icon = item.actions.left.primary.icon;
+
+       if (k > subActionThreshold && item.actions.left.secondary) {
+        color = item.actions.left.secondary.color;
+        icon = item.actions.left.secondary.icon;
+        activeAction = item.actions.left.secondary;
+      }
+
+      backgroundElem.style.backgroundColor = 'rgba(' + color.join(',') + ',' + alpha + ')';
+      if (bgIcon != icon) {
+        bgIcon = icon;
+        backgroundElem.style.backgroundImage = 'url(' + icon + ')';
+        backgroundElem.style.backgroundPosition = 'center left';
+      }
+    }
+    else if (deltaX < 0 && startX > 0 && item.actions.right && item.actions.right.primary) {
+      foregroundElem.style.left = deltaX + 'px';
+      k = -deltaX / itemElem.clientWidth;
+      alpha = 1;
+      if (k < actionThreshold) {
+        alpha = k / actionThreshold * 0.6;
+        activeAction = null;
+      }
+      else if (k > actionThreshold) {
+        activeAction = item.actions.right.primary;
+      }
+
+      var color = item.actions.right.primary.color;
+      var icon = item.actions.right.primary.icon;
+      if (k > subActionThreshold && item.actions.right.secondary) {
+        color = item.actions.right.secondary.color;
+        icon = item.actions.right.secondary.icon;
+        activeAction = item.actions.right.secondary;
+      }
+
+      backgroundElem.style.backgroundColor = 'rgba(' + color.join(',') + ',' + alpha + ')';
+      if (bgIcon != icon) {
+        bgIcon = icon;
+        backgroundElem.style.backgroundImage = 'url(' + icon + ')';
+        backgroundElem.style.backgroundPosition = 'center right';
+      }
+    }
+  }
+
+  function onSlideScroll(x, y) {
+    foregroundElem.style.left = 0 + 'px';
+  }
+
+  function onSlideEnd(x, y) {
+    if (activeAction && activeAction.callback) {
+      activeAction.callback();
+    }
+    foregroundElem.className = foregroundElem.className.replace('dragged', '');
+    foregroundElem.style.left = '0px';
+  }
+
+  function onDragStart(e) {
+    if (e.touches) return; //ignore duplicated mouse events on touch device
+    onSlideStart(e.pageX, e.pageY);
+    window.addEventListener('mousemove', onDragMove, false);
+    window.addEventListener('mouseup', onDragEnd, false);
+  }
+
+  function onDragMove(e) {
+    onSlide(e.pageX, e.pageY);
+  }
+
+  function onDragEnd(e) {
+    onSlideEnd(e.pageX, e.pageY);
+    e.currentTarget.removeEventListener('mousemove', onDragMove);
+    e.currentTarget.removeEventListener('mouseup', onDragEnd);
+  }
+
+  function onTouchStart(e) {
+    touchDragging = false;
+    onSlideStart(e.touches[0].clientX, e.touches[0].clientY);
+    console.log(e.currentTarget);
+    e.currentTarget.addEventListener('touchmove', onTouchMove, false);
+    e.currentTarget.addEventListener('touchend', onTouchEnd, false);
+  }
+
+  function onTouchMove(e) {
+    onSlide(e.touches[0].clientX, e.touches[0].clientY);
+    if (touchDragging || Math.abs(deltaX) >= Math.abs(deltaY)) {
+      touchDragging = true;
+      e.preventDefault();
+      return false;
+    }
+    else if (!touchDragging && Math.abs(deltaX) < 10 && Math.abs(deltaY) > 10) {
+      console.log(Math.abs(deltaX), Math.abs(deltaY));
+      onTouchEnd(e);
+    }
+    if (!touchDragging) {
+      onSlideScroll();
+    }
+  }
+
+  function onTouchEnd(e) {
+    console.log('onTouchEnd');
+    onSlideEnd(0, 0);
+    e.currentTarget.removeEventListener('touchmove', onTouchMove);
+    e.currentTarget.removeEventListener('touchend', onTouchEnd);
+  }
+
+  foregroundElem.addEventListener('mousedown', onDragStart, false);
+  foregroundElem.addEventListener('touchstart', onTouchStart, false);
+}
+
+settingsElements.forEach(function(itemElement) {
+  addItemEventHandlers(itemElement, {
+    actions: {
+      right: {
+        primary : { icon : 'img/info.png', color : [100,100,100], callback: function() { console.log('info!'); }},
+        secondary: { icon : 'img/x.png', color : [200,0,10], callback: function() { console.log('delete!'); }}
+      }
+    }
+  });
+});
+
+itemElements.forEach(function(itemElement) {
+  addItemEventHandlers(itemElement, {
+    actions: {
+      left: {
+        primary : { icon : 'img/edit.png', color : [250,200,0], callback: function() { console.log('edit!'); }},
+        secondary : { icon : 'img/pay.png', color : [0,200,255], callback: function() { console.log('pay!'); }}
+      },
+      right: { primary : { icon : 'img/x.png', color : [200,0,10], callback: function() { console.log('delete!'); }} }
+    }
+  });
+});
+
+</script>
+
+</body>
+</html>

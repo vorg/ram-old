@@ -1,0 +1,1 @@
+cashflow = angular.module('cashflow', ['cashflow.service', 'hmDirectives'])

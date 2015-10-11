@@ -1,0 +1,21 @@
+CACHE MANIFEST
+# rev 23
+
+CACHE:
+lib/pouchdb.js
+lib/react.js
+lib/date.js
+js/Main.js
+js/CacheUtils.js
+js/EventDispatcher.js
+img/back.png
+img/edit.png
+img/info.png
+img/list.png
+img/sync.png
+img/x.png
+img/move_right.png
+img/move_left.png
+
+NETWORK:
+*

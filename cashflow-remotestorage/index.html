@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html ng-app="cashflow">
+<head>
+  <meta name="apple-mobile-web-app-capable" content="no" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="style/style.css"/>
+</head>
+<body>
+  <div data-ng-controller="MenuController">
+    <div id="settings" class="open-{{settingsVisible}}">
+      <form action="http://node.variable.io:5984/_session">
+        <input type="text" name="user"/>
+        <input type="password" name="password"/>
+        <input type="submit"/>
+      </form>
+      <input type="submit" ng-click="sync()" value="{{syncState}}"/>
+      Last sync: {{lastUpdated}}
+    </div>
+    <ul id="menu" >
+      <li id="statusBtn">
+        <img src="img/cloud.png" />
+      </li>
+      <li id="monthlySummaryBtn" ng-click="toggleMonthlySummary()">
+        <img src="img/calendar.png" />
+      </li>
+      <li id="version">
+      </li>
+      <li id="settingsBtn" ng-click="toggleSettings()">
+        <img src="img/settings.png" />
+      </li>
+      <li id="refreshBtn">
+        <img src="img/refresh.png"/>
+      </li>
+    </ul>
+  </div>
+  <ul id="accounts" ng-controller="AccountsController" class="collapsed-{{collapsed}}">
+     <li ng-repeat="account in accounts" id="account_{{account._id}}" class="selected-{{account.selected}}" ng-click="onAccountClick(account._id)">
+        {{account.name}}
+        <span>{{account.value}}</span>
+      </li>
+  </ul>
+  <div id="monthlySummary" ng-controller="MonthlySummaryController" class="active-{{active}}">
+    <nav>
+      <a class="next" ng-click="next()"></a>
+      <a class="prev" ng-click="prev()"></a>
+      <h3>{{date|date:'MMM'}} {{year}}</h3>
+    </nav>
+    <ul>
+      <li ng-repeat="category in categories" class="monthlySummary">
+        <div style="border-left-color:{{category.color}}" ng-click="category.collapsed=!category.collapsed">{{category.name}}<span class="value">{{formatValue(category.value)}}</span></div>
+        <ul ng-show="!category.collapsed">
+          <span ng-repeat="subCategory in category.subCategories">
+            <li class="monthlySubSummary">
+              <div style="border-left-color:{{category.subColor}}" ng-click="subCategory.collapsed=!subCategory.collapsed">{{subCategory.name}}<span class="value">{{formatValue(subCategory.value)}}</span></div>
+            </li>
+            <span ng-show="!subCategory.collapsed">
+              <li ng-repeat="item in subCategory.items" class="item"
+                  ng-mousedown="onDragStart($event, item)"
+                  hm-touch="onTouchDragStart($event, item)">
+                &nbsp;
+                  <div class="new-{{item.cfNew}}">
+                    <span class="value">{{item.operation}}{{formatValue(item.value)}}</span> {{item.category}} <span class="notes">{{item.notes}}</span>
+                    <span ng-show="item.recurring">
+                      &nbsp;↻&nbsp;{{item.recurring}}
+                    </span>
+                    <span class="date">
+                      <span class="day">{{item.date|date:'d'}}</day>
+                      <span class="month">{{item.date|date:'MMM'}}</span>
+                    </span>
+                  </div>
+              </li>
+            </span>
+          <span>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <ul id="items" ng-controller="ItemsController">
+    <div class="loader" ng-show="loading"><img src="img/loading.gif"/></div>
+    <li ng-repeat="item in futureItems" class="item future"
+    ng-mousedown="onDragStart($event, item)"
+    hm-touch="onTouchDragStart($event, item)">
+      &nbsp;
+        <div class="new-{{item.cfNew}}">
+           <span class="value">{{item.operation}}{{formatValue(item.value)}}</span> {{item.category}} {{item.notes}}
+          <span ng-show="item.recurring">
+            &nbsp;↻&nbsp;{{item.recurring}}
+          </span>
+          <span class="date">
+            <span class="day">{{item.date|date:'d'}}</day>
+            <span class="month">{{item.date|date:'MMM'}}</span>
+          </span>
+        </div>
+    </li>
+    <li ng-repeat="item in items | limitTo:50" id="item_{{item._id}}" class="item"
+    ng-mousedown="onDragStart($event, item)"
+    hm-touch="onTouchDragStart($event, item)">
+      &nbsp;
+        <div class="new-{{item.cfNew}}">
+          <span class="value">{{item.operation}}{{formatValue(item.value)}}</span> {{item.category}} <span class="notes">{{item.notes}}</span>
+          <span ng-show="item.recurring">
+            &nbsp;↻&nbsp;{{item.recurring}}
+          </span>
+          <span class="date">
+            <span class="day">{{item.date|date:'d'}}</day>
+            <span class="month">{{item.date|date:'MMM'}}</span>
+          </span>
+        </div>
+    </li>
+  </ul>
+  <div ng-controller="ItemFormController" id="itemForm" class="{{mode}}">
+    <form action="" >
+      <ul>
+        <li><input type="date" placeholder="Date" value="" id="itemDateField" ng-model="date"/></li>
+        <li>
+          <input type="text" placeholder="Operation" value="-" id="itemOperationField" ng-model="operation"/>
+          <input type="number" placeholder="000" value="" id="itemValueField" pattern='[0-9]*' ng-model="value"/>
+          <input type="number" placeholder="00" value="" id="itemValueField2" pattern='[0-9]*' ng-model="value2"/>
+        </li>
+        <li><input type="text" placeholder="Category" value="" id="itemCategoryField"/ ng-model="category"></li>
+        <li><input type="text" placeholder="Notes" value="" id="itemNotesField" ng-model="notes"/></li>
+        <li>
+          <div class="input">
+            <select id="itemRecurring" value="none"  ng-model="recurring">
+              <option value="">never</option>
+              <option value="m">monthly</option>
+              <option value="y">yearly</option>
+            </select>
+            Recurring
+          </div>
+        </li>
+        <li><input type="hidden" value="" id="itemId"/></li>
+      </ul>
+    </form>
+    <div id="addItemButtonWrapper">
+      <a id="addItemButton" ng-click="onAddButtonClick()" class="{{updating}}">
+        <span ng-show="mode!='edit'">+</span>
+        <span ng-show="mode=='edit'">=</span>
+      </a>
+      <a id="cancelItemButton" ng-click="onCancelButtonClick()">x</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="lib/angular.min.js"></script>
+  <script type="text/javascript" src="lib/hammer.min.js"></script>
+  <script type="text/javascript" src="lib/angular-hammer.js"></script>
+  <script type="text/javascript" src="lib/pouchdb.js"></script>
+  <script type="text/javascript" src="lib/chroma.min.js"></script>
+  <script type="text/javascript" src="js/DataSourceService.js"></script>
+  <script type="text/javascript" src="js/Cashflow.js"></script>
+  <script type="text/javascript" src="js/MenuController.js"></script>
+  <script type="text/javascript" src="js/MonthlySummaryController.js"></script>
+  <script type="text/javascript" src="js/ItemsController.js"></script>
+  <script type="text/javascript" src="js/ItemFormController.js"></script>
+  <script type="text/javascript" src="js/AccountsController.js"></script>
+</body>
+</html>

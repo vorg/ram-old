@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang='en-GB' xmanifest="cache.manifest">
+<head>
+    <meta charset='utf-8'>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>My blank page</title>
+</head>
+
+<body id="content">
+    <div id="settings"></div>
+
+    <div id="accounts"></div>
+
+    <div id="stats"></div>
+
+    <div id="items"></div>
+
+    <div id="addForm"></div>
+
+    <div id="addFormButtonWrapper"></div>
+
+    <script id="settingsTemplate" type="text/ractive">
+      <ul class="list">
+        <li class="message {{needsRefresh ? '' : 'hidden'}}" id="refreshItem"><div><span>App is now updated. Slide to refresh.</span></div></li>
+        <li class="message {{loggedIn ? '' : 'hidden'}}" on-click="logout"><div><span>You are logged in</span></div></li>
+        <li class="message {{(!loggedIn) ? '' : 'hidden'}}" on-click="showLoginForm"><div><span>Log in to sync</span></div></li>
+        <li class="message {{(loggedIn && online) ? '' : 'hidden'}}" id="syncItem"><div class="progress"><span>Sync</span></div></li>
+      </ul>
+      <form action="{{server}}/_session" class="{{formClass}}" method="POST" format="application/x-www-form-urlencoded" on-submit="submit">
+        <input type="text" name="name" value="{{name}}" placeholder="name" id="loginFormName" disabled="true"/>
+        <input type="password" name="password" value="{{password}}" placeholder="password" disabled="true"/>
+        <input type="hidden" name="next" value="{{next}}" disabled="true"/>
+        <input type="submit"/>
+      </form>
+    </script>
+
+    <script id="accountsTemplate" type="text/ractive">
+      <ul class="list {{collapsed ? 'collapsed' : ''}}">
+        {{#accounts:i}}
+          <li class="account {{selected ? 'selected' : ''}}" on-tap="selectAccount:{{i}}">
+            <div><span>{{name}}</span></div>
+          </li>
+        {{/accounts}}
+      </ul>
+    </script>
+
+    <script id="statsTemplate" type="text/ractive">
+      <ul class="list {{collapsed ? 'collapsed' : ''}}">
+        <li class="calendarHeader">
+          <div>
+            <span on-mousedown="prevMonth" on-touchstart="prevMonth">&lt;</span>
+            <span>{{formatMonth(month)}} {{year}}</span>
+            <span on-mousedown="nextMonth" on-touchstart="nextMonth">&gt;</span></div>
+        </li>
+      </ul>
+      <ul class="list categories {{collapsed ? 'collapsed' : ''}}">
+        {{#items:i}}
+          <li class="item {{future ? 'future' : ''}}" id="{{_id}}" data-category="{{category}}">
+            <div>
+              <span class="price">{{formatPrice(total)}}</span>
+              <span class="name">{{category}}</span>
+              <span class="count">{{count}}</span>
+            </div>
+          </li>
+        {{/items}}
+      </ul>
+    </script>
+
+    <script id="itemsTemplate" type="text/ractive">
+      <ul class="list">
+        {{#items:i}}
+          <li class="item {{future ? 'future' : ''}}" id="{{_id}}">
+            <div>
+              <span class="price">{{operation}}{{formatPrice(value)}}</span>
+              <span class="name">{{category}} {{notes}}</span>
+              <span class="date">{{{formatDate(date)}}}</span>
+            </div>
+          </li>
+        {{/items}}
+        {{#showMore}}
+        <li on-click="loadMoreItems"><div><span>Load more... ({{left}} left)</span></div></li>
+        {{/showMore}}
+      </ul>
+    </script>
+
+    <script id="addFormTemplate" type="text/ractive">
+      <form class="{{open ? 'open' : ''}}" action="">
+        <ul class="list">
+          <li>
+            <div class="total"><span on-click="close"></span>
+            <span on-mousedown="closeCalendar" on-touchstart="closeCalendar">{{operation}} {{value}}</span></div></li>
+          <li>
+            <div class="info">
+            <span id="addFormCategory"
+              on-mousedown="editInfo" on-touchstart="editInfo" on-blur="finishEditingInfo"
+              on-keydown="onInputKeyDown" on-keyup="onInputKeyUp"
+              data-placeholder="category">{{category}}</span>
+            </div>
+          </li>
+          <li>
+            <div class="info">
+              <span id="addFormNotes"
+                on-mousedown="editInfo" on-touchstart="editInfo" on-blur="finishEditingInfo"
+                on-keydown="onInputKeyDown" on-keyup="onInputKeyUp"
+                data-placeholder="notes">{{notes}}</span>
+            </div></li>
+          <li>
+            <div class="repeat">
+              <span>repeat</span>
+              <span></span>
+              <span></span>
+              <span class="selected">never</span>
+              <span>1m</span>
+            </div>
+          </li>
+          <li>
+            <div class="dates">
+              <span on-mousedown="openCalendar" on-touchstart="openCalendar">...</span>
+              {{#prevDates}}
+                <span on-mousedown="selectPrevDate" on-touchstart="selectPrevDate" class="date">
+                  <span>{{formatDateDay(date)}}</span>
+                  <span>{{formatDateWeekDay(date)}}</span>
+                </span>
+              {{/prevDates}}
+              <span on-mousedown="" on-touchstart="" class="selected">
+                <span>{{formatDateDay(date)}}</span>
+                <span>{{formatDateMonth(date)}}</span>
+              </span>
+            </div>
+          </li>
+          {{#calendar}}
+          <li class="calendarHeader">
+            <div>
+              <span on-mousedown="prevMonth" on-touchstart="prevMonth">&lt;</span>
+              <span>{{month}} {{year}}</span>
+              <span on-mousedown="nextMonth" on-touchstart="nextMonth">&gt;</span></div>
+          </li>
+          {{/calendar}}
+          {{#calendar.weeks:num}}
+          <li class="calendarWeek">
+            <div>
+              {{#days:i}}
+                <span class="day {{isCurrent(fullDate) ? 'current' : ''}} {{today ? 'today' : ''}} {{out ? 'out' : ''}}"
+                on-mousedown="selectDate" on-touchstart="selectDate"
+                >{{date}}</span>
+              {{/days}}
+            </div>
+          </li>
+          {{/calendar.weeks}}
+          <li>
+            <div class="op">
+              <span on-mousedown="changeOperation" on-touchend="changeOperation" data-op="-">-</span>
+              <span on-mousedown="changeOperation" on-touchend="changeOperation" data-op="+">+</span>
+              <span on-mousedown="changeOperation" on-touchend="changeOperation" data-op="=">=</span>
+              <span on-mousedown="changeOperation" on-touchend="changeOperation" data-op="<">&lt;</span>
+              <span on-mousedown="changeOperation" on-touchend="changeOperation" data-op=">">&gt;</span>
+            </div>
+          </li>
+          <li><div class="key">
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='1'>1</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='2'>2</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='3'>3</span>
+          </div></li>
+          <li><div class="key">
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='4'>4</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='5'>5</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='6'>6</span>
+          </div></li>
+          <li><div class="key">
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='7'>7</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='8'>8</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='9'>9</span>
+          </div>
+          </li>
+          <li><div class="key">
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='<'>&lt;</span>
+            <span on-mousedown="keyPressed" on-touchend="keyPressed" data-key='0'>0</span>
+            <span on-mousedown="submit" on-touchend="submit" data-key='=' class="confirm">=</span>
+          </div></li>
+        </ul>
+      </form>
+    </script>
+
+    <script id="addFormButtonsTemplate" type="text/ractive">
+      <a id="addItemButton" on-click="addItemClick">+</a>
+      <a id="cancelItemButton">x</a>
+    </script>
+
+    <script type="text/javascript" src="lib/pouchdb.js"></script>
+    <script type="text/javascript" src="lib/ractive.js"></script>
+    <script type="text/javascript" src="lib/date.js"></script>
+    <script type="text/javascript" src="js/cache.js"></script>
+    <script type="text/javascript" src="js/events.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>

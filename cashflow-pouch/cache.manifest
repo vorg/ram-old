@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# rev 1
+
+CACHE:
+lib/pouchdb.js
+lib/ractive.js
+js/events.js
+js/cache.js
+js/app.js
+img/edit.png
+img/info.png
+img/pay.png
+img/x.png
+
+NETWORK:
+*
+
+FALLBACK:
+img/cloud.png img/cloud_offline.png

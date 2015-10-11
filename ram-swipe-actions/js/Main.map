@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Main.js",
+  "sourceRoot": "../../../vorg-pex/experiments/v2_inprogress/hdr2",
+  "sources": [
+    "../../../../vorg-ram/app/js/Main.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA,IAAA,QAAA;;AAAA,CAAA,CAA4B,CAApB,EAAR,MAAQ,CAAA,CAAA,CAAA,CAAA,CAAA,CAAA;;AAER,CAFA,EAEQ,EAAR;;AACA,CAHA,EAGgB,GAAV,GAAU;CACV,CAA4B,CAA7B,EAAH,EAAgC,EAAhC,CAAc;AACsD,CAAlE,CAAyD,CAAzD,CAAA,CAAkE,EAA3D,oCAAP;CACA,GAAA,GAAA;CAAgB,KAAA,EAAQ;MADxB;CAAA,GAEA,CAAK,gBAAL;CACM,CAA2B,CAAR,EAApB,GAAoC,GAAzC,GAAiC,CAAjC;CAJF,EAAgC;CADlB"
+}

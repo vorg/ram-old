@@ -1,0 +1,275 @@
+
+@font-face {
+    font-family: Input;
+    src: url(../fonts/Input/Input-Regular_InputSansNarrow-Light.ttf);
+}
+
+body, pre, input, textarea {
+  font-family: 'Input', Consolas, 'Andale Mono', 'Lucida Console', Menlo, monospace;
+  font-family: 'Fira Mono';
+}
+
+body, pre {
+  line-height: 150%;
+  font-size: 1.1em;
+}
+
+input {
+  font-size: 100%;
+  line-height: 100%;
+}
+
+body,
+body * {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  line-height: 100%;
+}
+
+/* menu ---------------------------------------------------------------------*/
+
+.optionsBar {
+  background: rgb(24, 42, 60);
+  color: #FFF;
+}
+
+.optionsBar li {
+  line-height: 200%;
+  padding: 0.5em;
+}
+
+.statusBar {
+  display: flex; display: -webkit-flex;
+  flex-direction: row; -webkit-flex-direction: row;
+  background: rgb(44, 62, 80);
+  color: #FFF;
+}
+
+.statusBar .title {
+  line-height: 200%;
+}
+
+.statusBar > div {
+  display: block;
+  flex: 1; -webkit-flex: 1;
+  padding: 0.5em;
+}
+
+.statusBar div.layoutBtn {
+  display: block;
+  flex: 1; -webkit-flex: 1;
+  padding: 0.6em 0.5em 0.4em 0.5em;
+}
+
+.statusBar > .viewsMenuBar {
+  flex: 2; -webkit-flex: 2;
+}
+
+.viewsMenuBar div {
+  float: right;
+  background: rgb(52, 73, 94);
+  width: 1em;
+  height: 1em;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 100%;
+  margin-right: 0.2em;
+  margin: 0;
+  border: 1px solid #333;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.viewsMenuBar div:hover,
+.viewsMenuBar div.selected {
+  border: 1px solid #FFF;
+  color: #FFF;
+}
+
+/* items list ---------------------------------------------------------------*/
+
+.list {
+  list-style-type: none;
+}
+
+.item {
+  border-bottom: 1px solid #EFEEFE;
+  display: block;
+}
+
+.item > div {
+  display: flex; display: -webkit-flex;
+  flex-direction: row; -webkit-flex-direction: row;
+}
+
+.item .textBox {
+  padding: 0.85em 0.5em 0.6em 0.5em;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 100%;
+  line-height: 150%;
+  xflex: 1; x-webkit-flex: 1;
+  border: none;
+  border-radius: 0;
+  min-width: 5em;
+  flex: 1; -webkit-flex: 1;
+}
+
+.item.hasChildren .textBox {
+  font-weight: bold;
+}
+
+@media all and (orientation: portrait) {
+  .item textarea {
+    margin-left:-3px;
+  }
+}
+
+.item .rest {
+  padding: 0.65em 0.5em;
+  cursor: pointer;
+  flex: 1; -webkit-flex: 1;
+  box-sizing: border-box;
+  xbackground: rgba(255,230,230,1);
+  min-width: 5em;
+}
+
+.item .tags {
+  padding: 0.85em 0.5em 0.65em 0.5em;
+}
+
+.item .tags a {
+  color: #19BC9C;
+  text-decoration: none;
+}
+
+.item .tags a:hover {
+  text-decoration: underline;
+}
+
+.item .tags a:after {
+  content: ",";
+  display: inline-block;
+  margin: 0 0.65em 0 0.01em;
+}
+
+.item .tags a:last-child:after {
+  content: "";
+  display: none;
+}
+
+.item.selected .textBox {
+  background: rgba(255, 255, 200, 1);
+}
+
+.item.editing input,
+.item.editing textarea {
+  background: rgba(255,255,200,1);
+  flex: 1; -webkit-flex: 1;
+}
+
+.item .note {
+  color: #AAA;
+  font-size: 80%;
+}
+
+.item .attachmentThumb {
+  min-width: 3em;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.parentStack .item {
+  background: rgb(236, 240, 241);
+}
+
+.parentStack .item .button {
+  padding: 1em 0 0.3em 0;
+  min-width: 3em;
+  background: rgb(127, 140, 141);
+  color: white;
+  text-align: center;
+  line-height: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.parentStack .item.selected .button {
+  background: rgb(149, 165, 166);
+}
+
+.parentStack .item.selected  .button {
+  color: white;
+  background: rgb(26, 188, 156);
+}
+
+.parentStack .item.selected .textBox {
+  background: rgba(230, 230, 180, 1);
+}
+
+
+.parentStack .item img,
+.parentStack .item .tags,
+.parentStack .item .attachmentThumb {
+  display: none;
+}
+
+/* cards layout ---------------------------------------------------------------*/
+
+@media all and (orientation: landscape) {
+  .layout-cards {
+    display: flex; display: -webkit-flex;
+  }
+
+  .layout-cards .list {
+    flex: 1; -webkit-flex: 1;
+  }
+
+  .layout-cards .parentStack {
+    flex: 0; -webkit-flex: 0;
+    width: 300px;
+    min-width: 300px;
+  }
+
+  .layout-cards .list .column {
+    float: left;
+    width: 24%;
+    margin: 0 0.5em 0 0;
+  }
+}
+
+@media all and (orientation: portrait) {
+  .layout-cards .list .column {
+    float: left;
+    width: 47%;
+    margin: 0 0.5em 0 0;
+    box-sizing: border-box;
+  }
+
+  .layout-cards .item .textBox,
+  .layout-cards .item .rest,
+  .layout-cards .item .tags {
+    display: none;
+  }
+}
+
+.layout-cards .itemList {
+  padding: 0.5em;
+}
+
+.layout-cards .itemList .item {
+  display: block;
+  border: 1px solid #999;
+  border-radius: 3px;
+  margin: 0 0 0.5em 0;
+}
+
+.layout-cards .parentStack .item img {
+  display: none;
+}
+
+.layout-cards .itemList .item img {
+  width: 100%;
+  height: auto;
+}

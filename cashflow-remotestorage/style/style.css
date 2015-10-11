@@ -1,0 +1,429 @@
+html, body, * {
+  margin: 0;
+  padding: 0;
+  font-family: helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection { background: transparent; }
+
+li {
+  list-style-type: none
+}
+
+/*-- menu -------------------------------------------------------------- */
+
+#settings input {
+  padding: 1em;
+}
+
+#settings {
+  height: 0px;
+  background: yellow;
+  -webkit-transition: height 0.4s ease-out;
+  transition: height 0.4s ease-out;
+  overflow: hidden;
+}
+
+#settings.open-true {
+  padding: 2em;
+  height: 100px;
+  overflow: auto;
+}
+
+#settings #remotestorage-widget {
+  position: relative;
+  float: right;
+}
+
+#version {
+  padding: 0.6em 0 0 0.5em;
+  box-sizing: border-box;
+}
+
+#menu {
+  overflow: auto;
+  margin-top: 1px;
+}
+
+#menu li {
+  float: left;
+  width: 40px;
+  height: 40px;
+}
+
+#menu li img {
+  width: 40px;
+  height: 40px;
+}
+
+#menu li a {
+  background: #66EEFF;
+  padding: 0.5em;
+  display: block;
+  box-sizing: border-box;
+  min-width: 40px;
+  height: 40px;
+}
+
+#menu li#statusBtn {
+  float: left;
+  opacity: 0.35;
+}
+
+#menu li#monthlySummaryBtn {
+  float: left;
+  opacity: 0.35;
+}
+
+#menu li#monthlySummaryBtn:active {
+  opacity: 1;
+}
+
+#menu li#settingsBtn {
+  float: right;
+  opacity: 0.35;
+}
+
+#menu li#refreshBtn {
+  float: right;
+  margin-right: 0.25em;
+  opacity: 0.35;
+}
+
+#accounts li {
+  -webkit-transition: height 0.4s ease-out, padding 0.4s ease-out;
+  transition: height 0.4s ease-out, padding 0.4s ease-out;
+  overflow: hidden;
+}
+
+#accounts.collapsed-true li:not(.selected-true) {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/*-- accounts -------------------------------------------------------------- */
+
+#accounts li {
+  margin: 1px;
+  background: #AAAAAA;
+  padding: 1em;
+  color: white;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+#accounts li.selected-true {
+  background: #000000 url(../img/layers_w.png) no-repeat center right;
+}
+
+#accounts li span {
+  float: right;
+  margin-right: 3em;
+}
+
+/*-- items -------------------------------------------------------------- */
+
+#items {
+  padding-bottom: 6em;
+}
+
+li.item {
+  margin: 1px;
+  background: #FF0000 url('../img/x.png') no-repeat top right;
+  padding: 1em;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+  border-bottom: 1px solid #EEE;
+  position: relative;
+}
+
+li.item div {
+  background: #FFFFFF;
+  padding: 1em 1em 1em 1em;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+li.item span.value {
+  float: left;
+  width: 50px;
+  margin-right: 20px;
+  text-align: right;
+}
+
+li.item.future {
+  color: #BBB;
+}
+
+li.item .date {
+  display: block;
+  width: 3.4em;
+  -webkit-border-radius: 0.5em;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  text-align: center;
+  color: #999;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+li.item .date span {
+  display: block;
+}
+
+#items .loader {
+  margin: 0 auto;
+  width: 30px;
+  padding: 0.5em;
+}
+
+@-webkit-keyframes newAppear {
+  0%   { background-color: rgba(255, 255, 0, 1); }
+  100%  { background-color: rgba(255, 255, 255, 1); }
+}
+
+.notes {
+  color: #999;
+}
+
+/*-- monthlySummary -------------------------------------------------------------- */
+
+#monthlySummary nav {
+  position: relative;
+  overflow: auto;
+  background: #999;
+  margin: -2px 1px 1px 1px;
+  overflow: hidden;
+}
+
+#monthlySummary nav a, #monthlySummary nav h3 {
+  padding: 1em;
+  display: block;
+  color: white;
+}
+
+#monthlySummary nav a.prev {
+  float: left;
+  color: white;
+}
+
+#monthlySummary nav a.next {
+  float: right;
+  color: white;
+}
+
+#monthlySummary nav a {
+  background: #888;
+  z-index: 50;
+}
+
+#monthlySummary nav a:active {
+  background: #666;
+}
+
+#monthlySummary nav a.prev:before {
+  content: '◄ ';
+  font-family: 'Arial';
+  font-size: 80%;
+}
+
+#monthlySummary nav a.next:after {
+  content: ' ►';
+  font-family: 'Arial';
+  font-size: 80%;
+}
+
+#monthlySummary nav h3 {
+  width: 100%;
+  font-size: 100%;
+  text-align: center;
+  font-weight: normal;
+}
+
+li.monthlySummary > div, li.monthlySubSummary > div {
+  margin: 1px;
+  padding: 1em;
+  border-bottom: 1px solid #EEE;
+  border-left: 5px solid #EEE;
+}
+
+li.monthlySummary > div .value, li.monthlySubSummary > div .value {
+  float: left;
+  width: 50px;
+  margin-right: 20px;
+  text-align: right;
+}
+
+li.monthlySummary ul > li > div {
+  color: #999;
+}
+
+#monthlySummary.active-false {
+  display: none;
+}
+
+#monthlySummary.active-true + #items {
+  display: none;
+}
+
+/*-- add form -------------------------------------------------------------- */
+
+#addItemButtonWrapper {
+  position: fixed;
+  left: 50%;
+  bottom: 1em;
+  font-size: 120%;
+  width: 6em;
+  height: 3em;
+}
+
+#addItemButton {
+  width: 3em;
+  height: 3em;
+  background: red;
+  color: white;
+  background: red no-repeat 50% 50%;
+  padding: 0.8em 1em 1.2em 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-radius: 1.5em;
+  text-align: center;
+  display: block;
+  margin-left: -1.5em;
+  float: left;
+  -webkit-transition: background 0.4s ease-out, opacity 0.4s ease-out 0.4s;
+  transition: background 0.4s ease-out, opacity 0.4s ease-out 0.4s;
+}
+
+.edit #addItemButton {
+  background: green;
+}
+
+.pay #addItemButton {
+  background: rgb(0,200,255);
+}
+
+#addItemButton.adding {
+  background: red url(../img/loadingBig.gif) no-repeat 50% 50%;
+}
+
+#addItemButton.editing {
+  background: green url(../img/loadingBig.gif) no-repeat 50% 50%;
+}
+
+#cancelItemButton {
+  width: 3em;
+  height: 3em;
+  background: #888;
+  color: white;
+  padding: 0.8em 1em 1.2em 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-radius: 1.5em;
+  text-align: center;
+  display: none;
+  margin-left: 1.5em;
+  float: left;
+}
+
+#itemForm.add #cancelItemButton,
+#itemForm.edit #cancelItemButton,
+#itemForm.pay #cancelItemButton {
+  display: block;
+}
+
+#itemForm form {
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -webkit-transform: translateZ(0);
+  font-size: 100%;
+  display: block;
+  width: 100%;
+  height: 120%;
+  background: #AAA;
+  position: fixed;
+  -webkit-transition: top 0.3s ease-out;
+  transition: top 0.3s ease-out;
+  top: 110%;
+  xopacity: 0;
+}
+
+#itemForm.add form,
+#itemForm.edit form,
+#itemForm.pay form  {
+  top: 0;
+  -webkit-transition: top 0.3s ease-out;
+  transition: top 0.3s ease-out;
+  xopacity: 1;
+}
+
+#itemForm li {
+  box-sizing: border-box;
+  padding: 0.5em 1em;
+  max-width: 31em;
+  overflow: auto;
+}
+
+#itemForm li:first-child {
+  padding-top: 1em;
+}
+
+#itemForm input {
+  font-size: 100%;
+  border: 0;
+  padding: 0.5em;
+  width: 95%;
+  border-radius: 5px;
+}
+
+#itemForm input#itemOperationField {
+  width: 20%;
+  float: left;
+  margin-right: 1em;
+}
+
+#itemForm input#itemValueField {
+  text-align: right;
+  width: 49%;
+  float: left;
+  margin-right: 0.2em;
+}
+
+#itemForm input#itemValueField2 {
+  text-align: center;
+  width: 8%;
+  float: left;
+}
+
+#itemForm input#itemDateField {
+  width: 270px;
+}
+
+#itemForm div.input {
+  font-size: 100%;
+  border: 0;
+  padding: 0.5em;
+  width: 95%;
+  background: white;
+  color: #AAA;
+  border-radius: 5px;
+}
+
+#itemForm select {
+  font-size: 100%;
+  border: 0;
+  padding: 0.5em;
+  margin: -4px -4px 0 1em;
+  color: #000;
+  float: right;
+}
