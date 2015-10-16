@@ -1,0 +1,500 @@
+<html>
+<head>
+
+<style type="text/css">
+
+::selection {
+	background: #ffb7b7; /* Safari */
+  border: none;
+}
+
+:focus {
+  outline: 1px solid red;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box
+}
+
+body {
+  margin: 1em;
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+li {
+  min-height: 25px;
+  background: url(dots.png) repeat-x;
+}
+
+li {
+  border-left: 1px solid black;
+}
+
+li:last-child {
+  border-left: 1px none black;
+}
+
+li:last-child > span {
+  border-left: 1px solid black;
+  border-bottom-left-radius: 5px;
+}
+
+
+li > span {
+  display: inline-block;
+  max-width: 90%;
+  overflow: hidden;
+  white-space:nowrap;
+  word-break: break-none;
+  background: #FFF;
+  padding: 0px 5px 2px 5px;
+}
+
+li > span.important {
+  color: rgb(255, 100, 0);
+}
+
+li > span.next {
+  color: rgb(50, 200, 255);
+}
+
+li > span.done {
+  color: rgb(200, 200, 200);
+}
+
+
+li.current {
+}
+
+li.current > span {
+  color: red;
+}
+
+.current li {
+  color: black;
+}
+
+ul {
+  margin-left: 200px;
+  margin-top: -18px;
+  xmargin: 0 0 5px 0;
+}
+
+ul li {
+  width: 200px;
+}
+
+body > ul {
+  margin-top: 0;
+  margin-left: 0px;
+}
+
+body > ul > li > ul,
+body > ul > li > ul > li > ul,
+xbody > ul > li > ul > li > ul > li > ul {
+  margin-left: 100px;
+}
+
+body > ul > li,
+body > ul > li > ul > li,
+xbody > ul > li > ul > li > ul > li {
+  width: 100px;
+}
+
+
+</style>
+<script type="text/javascript"src="jquery.js"></script>
+<script type="text/javascript">
+function selectElementText(el) {
+    if (window.getSelection && document.createRange) {
+        var range = document.createRange();
+        if (el.childNodes.length > 0) {
+          range.setStart(el.childNodes[0], el.childNodes[0].length);
+          range.setEnd(el.childNodes[0], el.childNodes[0].length);
+        }
+        else {
+          range.setStart(el, 0);
+          range.setEnd(el, 0);
+        }
+
+        var sel = window.getSelection();
+        sel.empty();
+        sel.addRange(range);
+    }
+}
+</script>
+<script type="text/javascript">
+
+//ideas:
+//-capture mode feedback
+
+//jquery match reverse extension
+$.fn.reverse = function() {
+    return this.pushStack(this.get().reverse(), arguments);
+};
+
+var state = {
+  currentNode: null
+}
+
+function addChildNode(node) {
+  var newNode = $("<li><span></span></li>");
+  if (node.children().size() > 1) {
+    node.find("> ul").append(newNode);
+    return newNode;
+  }
+  else {
+    var ul = $("<ul></ul>");
+    ul.append(newNode);
+    node.append(ul);
+    return newNode;
+  }
+}
+
+function addSiblingNode(node) {
+  var newNode = $("<li><span></span></li>");
+  node.after(newNode);
+  return newNode;
+}
+
+function selectNode(node) {
+  if (state.currentNode != null) {
+    if (state.editMode && !state.currentNode.find("> span").first().text()) {
+      state.currentNode.find("> span").first().text("-");
+      state.editMode = false;
+    }
+    state.currentNode.find("> span").first().removeAttr("contenteditable");
+    state.currentNode.find("> span").blur();
+    state.currentNode.removeClass("current");
+  }
+  state.currentNode = node;
+  state.currentNode.addClass("current");
+}
+
+function selectPrevNode(node) {
+  if (node.index() > 0) {
+    selectNode(node.prev());
+  }
+  //else {
+    //selectParentNode(node);
+    //}
+  else {
+    //find next node on the same level
+    var level = getNodeLevel(node);
+    var nextNode = findPrevNodeOnLevel(node, level);
+    if (nextNode) {
+        selectNode(nextNode);
+    }
+    else {
+      selectParentNode(node);
+    }
+  }
+}
+
+function selectNextNode(node) {
+  if (node.index() < node.parent().children().size() - 1) {
+    selectNode(node.next());
+  }
+  else {
+    //find next node on the same level
+    var level = getNodeLevel(node);
+    var nextNode = findNextNodeOnLevel(node, level);
+    if (nextNode) {
+        selectNode(nextNode);
+    }
+  }
+}
+
+function findFirstChildOnLevel(node, level) {
+  var nodeLevel = getNodeLevel(node);
+  if (nodeLevel == level) return node;
+  else if (nodeLevel > level) return null;
+
+  var child = null;
+  node.find("> ul > li").each(function() {
+    if (!child) {
+        child = findFirstChildOnLevel($(this), level);
+    }
+  })
+  return child;
+}
+
+function findLastChildOnLevel(node, level) {
+  var nodeLevel = getNodeLevel(node);
+  if (nodeLevel == level) return node;
+  else if (nodeLevel > level) return null;
+  var child = null;
+
+  node.find("> ul > li").reverse().each(function() {
+    if (!child) {
+        child = findLastChildOnLevel($(this), level);
+    }
+  })
+
+  return child;
+}
+
+
+function findNextNodeOnLevel(node, level) {
+  var parentNode = node.parent().parent();
+  for(var i=parentNode.index()+1; i<parentNode.parent().children().size(); i++) {
+    var parentSibling = parentNode.parent().children().eq(i);
+    var child = findFirstChildOnLevel(parentSibling, level)
+    if (child) return child;
+  }
+  if (parentNode.is('body')) return null;
+  else return findNextNodeOnLevel(parentNode, level);
+}
+
+function findPrevNodeOnLevel(node, level) {
+  console.log("findPrevNodeOnLevel", node.find("> span").text());
+  var parentNode = node.parent().parent();
+  for(var i=parentNode.index()-1; i>=0; i--) {
+    var parentSibling = parentNode.parent().children().eq(i);
+    var child = findLastChildOnLevel(parentSibling, level)
+    if (child) return child;
+  }
+  if (parentNode.is('body')) return null;
+  else return findPrevNodeOnLevel(parentNode, level);
+}
+
+
+function getNodeLevel(node) {
+  var parentNode = node.parent().parent();
+  if (!parentNode.is('li')) return 0;
+  else return 1 + getNodeLevel(parentNode);
+}
+
+function selectParentNode(node) {
+  if (node.parent().parent().get(0).nodeName == "LI") {
+    selectNode(node.parent().parent());
+  }
+}
+
+function selectChildNode(node) {
+  if (node.children().size() > 1) {
+    selectNode(node.find("li").first());
+  }
+}
+
+function deleteNode(deleteNode) {
+  deleteNode.remove();
+}
+
+function editNode(node) {
+  node.find("> span").first().attr("contentEditable", "").focus();
+  if (node.find("> span").text() == "-") {
+    node.find("> span").text("");
+  }
+  selectElementText(node.find("> span").first().get(0));
+  state.editMode = true;
+  state.editModePrevText = node.find("> span").text();
+}
+
+function exitEditNode(node) {
+  selectNode(state.currentNode); //cancels edit mode
+  state.editMode = false;
+}
+
+
+function serializeList(listElement, item) {
+  listElement.find('> li').each(function() {
+    var childItem = {
+      value: $(this).find('> span').text(),
+      children: []
+    }
+    item.children.push(childItem);
+    var childrenList = $(this).find('> ul');
+    if (childrenList.size() > 0) {
+      serializeList(childrenList, childItem);
+    }
+  })
+
+}
+
+function serializeContent() {
+  var item = {
+    value: '',
+    children: []
+  };
+  serializeList($('body > ul'), item);
+  return item;
+}
+
+function deserializeItem(parentElement, item) {
+  var li = $('<li></li>');
+  var span = $('<span></span>').text(item.value);
+  li.append(span);
+  parentElement.append(li);
+  if (item.children.length > 0) {
+    var childrenUl = $('<ul></ul>');
+    li.append(childrenUl);
+    $(item.children).each(function() {
+        deserializeItem(childrenUl, this);
+    })
+  }
+}
+
+function deserializeContent(data) {
+  $('body ul').remove();
+  var rootList = $('<ul></ul>');
+  $('body').append(rootList);
+  deserializeItem(rootList, data);
+
+  var rootNode = $('body ul > li').first();
+  rootNode.addClass('current');
+  state.currentNode = rootNode;
+}
+
+function saveData() {
+  var data = serializeContent().children[0];
+  var dataStr = JSON.stringify(data);
+  localStorage["tabeditData"] = dataStr;
+  //saveFile(dataStr);
+}
+
+function loadData() {
+  state.edited = true;
+  var data = JSON.parse(localStorage["tabeditData"]);
+  deserializeContent(data);
+}
+
+window.addEventListener('keydown', function(e) {
+  state.edited = true;
+
+  if (e.ctrlKey) {
+    var c = String.fromCharCode(e.charCode || e.keyCode);
+    switch(c) {
+      case 'S': saveData(); break;
+      case 'L': loadData(); break;
+    }
+    e.preventDefault();
+    return;
+  }
+
+  switch(e.keyCode) {
+    case 9: //Tab
+      if (e.shiftKey) {
+        selectParentNode(state.currentNode);
+        editNode(state.currentNode);
+      }
+      else {
+        selectNode(addChildNode(state.currentNode));
+        editNode(state.currentNode);
+      }
+      e.preventDefault();
+    break;
+    case 13: //Enter
+      if (state.editMode) {
+        exitEditNode(state.currentNode);
+      }
+      else {
+        selectNode(addSiblingNode(state.currentNode));
+        editNode(state.currentNode);
+      }
+      e.preventDefault();
+    break;
+    case 37: //Left
+      if (!state.editMode) {
+        selectParentNode(state.currentNode);
+        e.preventDefault();
+      }
+    break;
+    case 38: //Up
+      if (!state.editMode) {
+        if (e.metaKey) { //move up
+          var prev = state.currentNode.prev();
+          if (prev.size() > 0) {
+            prev.before(state.currentNode);
+          }
+        }
+        else {
+          selectPrevNode(state.currentNode);
+        }
+        e.preventDefault();
+      }
+    break;
+    case 39: //Right
+      if (!state.editMode) {
+        selectChildNode(state.currentNode);
+        e.preventDefault();
+      }
+    break;
+    case 40: //Down
+      if (!state.editMode) {
+        if (e.metaKey) { //move up
+          var next = state.currentNode.next();
+          if (next.size() > 0) {
+            next.after(state.currentNode);
+          }
+        }
+        else {
+            selectNextNode(state.currentNode);
+        }
+        e.preventDefault();
+      }
+    break;
+    case 27: //ESC
+      if (state.editMode) {
+        state.currentNode.find("> span").text(state.editModePrevText);
+        exitEditNode(state.currentNode);
+        e.preventDefault();
+      }
+    break;
+    case 46: //DEL
+      if (!state.editMode) {
+        var nodeToDelete = state.currentNode;
+        selectPrevNode(state.currentNode);
+        deleteNode(nodeToDelete);
+        e.preventDefault();
+      }
+    break;
+    case 113: //F2
+      if (!state.editMode) {
+        editNode(state.currentNode);
+        e.preventDefault();
+      }
+    break;
+  }
+})
+
+window.addEventListener('keypress', function(e) {
+  var c = String.fromCharCode(e.charCode || e.keyCode);
+  if (c.length != 0 && state.currentNode) {
+    //if (state.currentNode.is("[contentEditable]")) {
+    if (!state.editMode) {
+      editNode(state.currentNode)
+    }
+  }
+})
+
+window.onload = function() {
+  state.currentNode = $(".current").eq(0);
+  loadData();
+
+  setInterval(function() {
+    if (!state.edited) return;
+    state.edited = false;
+
+    $("span.important").removeClass('important');
+    $("span.done").removeClass('done');
+    $("span:contains('[!]')").addClass('important');
+    $("span:contains('[x]')").addClass('done');
+    $("span:contains('[@]')").addClass('next');
+  }, 1000)
+}
+
+
+
+</script>
+</head>
+<ul>
+  <li class="current"><span>Root</span></li>
+</ul>
+</html>
