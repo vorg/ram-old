@@ -88,6 +88,35 @@ ul {
 .debug .name { background: green; }
 .debug .date { background: blue; }
 
+.list .input {
+    padding: 0;
+}
+
+.list .input span {
+    padding: 0;
+}
+
+
+.list .input input {
+    background: none;
+    color: #FFF;
+    font-size: 100%;
+    width: 100%;
+    padding: 0.75em 2%;
+    border: 0;
+}
+
+.list .input textarea {
+    background: none;
+    color: #FFF;
+    font-size: 100%;
+    width: 100%;
+    padding: 0.75em 2%;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 0;
+}
+
 </style>
 <title>My blank page</title>
 </head>
@@ -97,8 +126,13 @@ ul {
 
 <ul class="list settings">
   <li>
-    <div>
-      <span>This is a text item #1</span>
+    <div class="input">
+      <span><input type="text" placeholder="type line here..."></span>
+    </div>
+  </li>
+  <li>
+    <div class="input">
+      <span><textarea type="text" placeholder="type text here..."></textarea></span>
     </div>
   </li>
   <li>
